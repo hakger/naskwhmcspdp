@@ -1,6 +1,6 @@
 {
-    "name": "whmcs/sample-registrar-module",
-    "description": "Sample Registrar Module for WHMCS Billing Automation Platform",
+    "name": "hakger/naskwhmcspdp",
+    "description": "NASK Registrar module for WHMCS Billing Automation Platform",
     "keywords": [
         "whmcs",
         "web host automation platform",

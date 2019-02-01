@@ -17,7 +17,7 @@
  * Within the module itself, all functions must be prefixed with the module
  * filename, followed by an underscore, and then the function name. For
  * example this file, the filename is "registrarmodule.php" and therefore all
- * function begin "registrarmodule_".
+ * function begin "nask_".
  *
  * If your module or third party API does not support a given function, you
  * should not define the function within your module. WHMCS recommends that
@@ -38,7 +38,7 @@ if (!defined("WHMCS")) {
 
 use WHMCS\Domains\DomainLookup\ResultsList;
 use WHMCS\Domains\DomainLookup\SearchResult;
-use WHMCS\Module\Registrar\Registrarmodule\ApiClient;
+use WHMCS\Module\Registrar\Nask\ApiClient;
 
 // Require any libraries needed for the module to function.
 // require_once __DIR__ . '/path/to/library/loader.php';
@@ -53,7 +53,7 @@ use WHMCS\Module\Registrar\Registrarmodule\ApiClient;
  *
  * @return array
  */
-function registrarmodule_MetaData()
+function nask_MetaData()
 {
     return array(
         'DisplayName' => 'Sample Registrar Module for WHMCS',
@@ -79,7 +79,7 @@ function registrarmodule_MetaData()
  *
  * @return array
  */
-function registrarmodule_getConfigArray()
+function nask_getConfigArray()
 {
     return array(
         // Friendly display name for the module
@@ -148,7 +148,7 @@ function registrarmodule_getConfigArray()
  *
  * @return array
  */
-function registrarmodule_RegisterDomain($params)
+function nask_RegisterDomain($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -314,7 +314,7 @@ function registrarmodule_RegisterDomain($params)
  *
  * @return array
  */
-function registrarmodule_TransferDomain($params)
+function nask_TransferDomain($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -478,7 +478,7 @@ function registrarmodule_TransferDomain($params)
  *
  * @return array
  */
-function registrarmodule_RenewDomain($params)
+function nask_RenewDomain($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -548,7 +548,7 @@ function registrarmodule_RenewDomain($params)
  *
  * @return array
  */
-function registrarmodule_GetNameservers($params)
+function nask_GetNameservers($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -603,7 +603,7 @@ function registrarmodule_GetNameservers($params)
  *
  * @return array
  */
-function registrarmodule_SaveNameservers($params)
+function nask_SaveNameservers($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -664,7 +664,7 @@ function registrarmodule_SaveNameservers($params)
  *
  * @return array
  */
-function registrarmodule_GetContactDetails($params)
+function nask_GetContactDetails($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -769,7 +769,7 @@ function registrarmodule_GetContactDetails($params)
  *
  * @return array
  */
-function registrarmodule_SaveContactDetails($params)
+function nask_SaveContactDetails($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -855,7 +855,7 @@ function registrarmodule_SaveContactDetails($params)
  *
  * @return \WHMCS\Domains\DomainLookup\ResultsList An ArrayObject based collection of \WHMCS\Domains\DomainLookup\SearchResult results
  */
-function registrarmodule_CheckAvailability($params)
+function nask_CheckAvailability($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -940,7 +940,7 @@ function registrarmodule_CheckAvailability($params)
  *
  * @return array of Configuration Options
  */
-function registrarmodule_DomainSuggestionOptions() {
+function nask_DomainSuggestionOptions() {
     return array(
         'includeCCTlds' => array(
             'FriendlyName' => 'Include Country Level TLDs',
@@ -965,7 +965,7 @@ function registrarmodule_DomainSuggestionOptions() {
  *
  * @return \WHMCS\Domains\DomainLookup\ResultsList An ArrayObject based collection of \WHMCS\Domains\DomainLookup\SearchResult results
  */
-function registrarmodule_GetDomainSuggestions($params)
+function nask_GetDomainSuggestions($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1047,7 +1047,7 @@ function registrarmodule_GetDomainSuggestions($params)
  *
  * @return string|array Lock status or error message
  */
-function registrarmodule_GetRegistrarLock($params)
+function nask_GetRegistrarLock($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1095,7 +1095,7 @@ function registrarmodule_GetRegistrarLock($params)
  *
  * @return array
  */
-function registrarmodule_SaveRegistrarLock($params)
+function nask_SaveRegistrarLock($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1145,7 +1145,7 @@ function registrarmodule_SaveRegistrarLock($params)
  *
  * @return array DNS Host Records
  */
-function registrarmodule_GetDNS($params)
+function nask_GetDNS($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1198,7 +1198,7 @@ function registrarmodule_GetDNS($params)
  *
  * @return array
  */
-function registrarmodule_SaveDNS($params)
+function nask_SaveDNS($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1248,7 +1248,7 @@ function registrarmodule_SaveDNS($params)
  *
  * @return array
  */
-function registrarmodule_IDProtectToggle($params)
+function nask_IDProtectToggle($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1306,7 +1306,7 @@ function registrarmodule_IDProtectToggle($params)
  * @return array
  *
  */
-function registrarmodule_GetEPPCode($params)
+function nask_GetEPPCode($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1363,7 +1363,7 @@ function registrarmodule_GetEPPCode($params)
  *
  * @return array
  */
-function registrarmodule_ReleaseDomain($params)
+function nask_ReleaseDomain($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1413,7 +1413,7 @@ function registrarmodule_ReleaseDomain($params)
  *
  * @return array
  */
-function registrarmodule_RequestDelete($params)
+function nask_RequestDelete($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1461,7 +1461,7 @@ function registrarmodule_RequestDelete($params)
  *
  * @return array
  */
-function registrarmodule_RegisterNameserver($params)
+function nask_RegisterNameserver($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1515,7 +1515,7 @@ function registrarmodule_RegisterNameserver($params)
  *
  * @return array
  */
-function registrarmodule_ModifyNameserver($params)
+function nask_ModifyNameserver($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1569,7 +1569,7 @@ function registrarmodule_ModifyNameserver($params)
  *
  * @return array
  */
-function registrarmodule_DeleteNameserver($params)
+function nask_DeleteNameserver($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1623,7 +1623,7 @@ function registrarmodule_DeleteNameserver($params)
  *
  * @return array
  */
-function registrarmodule_Sync($params)
+function nask_Sync($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1675,7 +1675,7 @@ function registrarmodule_Sync($params)
  *
  * @return array
  */
-function registrarmodule_TransferSync($params)
+function nask_TransferSync($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1728,11 +1728,11 @@ function registrarmodule_TransferSync($params)
  *
  * Allows you to define additional actions your module supports.
  * In this example, we register a Push Domain action which triggers
- * the `registrarmodule_push` function when invoked.
+ * the `nask_push` function when invoked.
  *
  * @return array
  */
-function registrarmodule_ClientAreaCustomButtonArray()
+function nask_ClientAreaCustomButtonArray()
 {
     return array(
         'Push Domain' => 'push',
@@ -1747,7 +1747,7 @@ function registrarmodule_ClientAreaCustomButtonArray()
  *
  * @return array
  */
-function registrarmodule_ClientAreaAllowedFunctions()
+function nask_ClientAreaAllowedFunctions()
 {
     return array(
         'Push Domain' => 'push',
@@ -1763,7 +1763,7 @@ function registrarmodule_ClientAreaAllowedFunctions()
  *
  * @return array
  */
-function registrarmodule_push($params)
+function nask_push($params)
 {
     // user defined configuration values
     $userIdentifier = $params['API Username'];
@@ -1794,7 +1794,7 @@ function registrarmodule_push($params)
  *
  * @return string HTML Output
  */
-function registrarmodule_ClientArea($params)
+function nask_ClientArea($params)
 {
     $output = '
         <div class="alert alert-info">
