@@ -1,6 +1,6 @@
 <?php
 /**
- * WHMCS Sample Registrar Module Test
+ * WHMCS NASK Module Test
  *
  * Sample PHPUnit test that asserts the fundamental requirements of a WHMCS
  * registrar module.
@@ -14,7 +14,7 @@
  * @license http://www.whmcs.com/license/ WHMCS Eula
  */
 
-class  WHMCSSampleRegistrarModuleTest extends PHPUnit_Framework_TestCase
+class  WHMCSNaskModuleTest extends PHPUnit_Framework_TestCase
 {
 
     public static function providerCoreFunctionNames()
@@ -42,6 +42,6 @@ class  WHMCSSampleRegistrarModuleTest extends PHPUnit_Framework_TestCase
      */
     public function testCoreModuleFunctionsExist($moduleName)
     {
-        $this->assertTrue(function_exists('registrarmodule_' . $moduleName));
+        $this->assertTrue(function_exists('nask_' . $moduleName));
     }
 }

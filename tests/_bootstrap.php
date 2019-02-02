@@ -4,7 +4,7 @@ if (!defined('WHMCS')) {
     define('WHMCS', true);
 }
 // Include the WHMCS module.
-require_once __DIR__ . '/../modules/registrars/registrarmodule/registrarmodule.php';
+require_once __DIR__ . '/../modules/registrars/nask/nask.php';
 
 /**
  * Mock logModuleCall function for testing purposes.
