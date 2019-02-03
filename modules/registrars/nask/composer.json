@@ -1,0 +1,5 @@
+{
+    "require": {
+        "africc/php-epp2": "^1.0"
+    }
+}

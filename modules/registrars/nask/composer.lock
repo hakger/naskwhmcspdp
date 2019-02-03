@@ -1,0 +1,70 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "94f59263ceffeb0ca5b2638ffc4c8787",
+    "packages": [
+        {
+            "name": "africc/php-epp2",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AfriCC/php-epp2.git",
+                "reference": "9ceb137b04d084936603b8fbc040e511ecbe1acb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AfriCC/php-epp2/zipball/9ceb137b04d084936603b8fbc040e511ecbe1acb",
+                "reference": "9ceb137b04d084936603b8fbc040e511ecbe1acb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-openssl": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AfriCC\\": "src/AfriCC"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Gunter Grodotzki",
+                    "email": "hello@afri.cc",
+                    "homepage": "https://www.afri.cc",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A High Level EPP (Extensible Provisioning Protocol) TCP/SSL Client for PHP",
+            "homepage": "https://github.com/AfriCC/php-epp2",
+            "keywords": [
+                "client",
+                "domains",
+                "epp",
+                "registrar",
+                "registry",
+                "tcp"
+            ],
+            "time": "2018-12-23T13:26:49+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
