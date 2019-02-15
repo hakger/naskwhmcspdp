@@ -1,5 +1,22 @@
 {
     "require": {
-        "africc/php-epp2": "^1.0"
-    }
+        "hakger/php-epp2": "dev-master"
+    },
+    "authors" : [{
+			"name" : "Hubert Kowalski",
+			"email" : "h.kowalski@hakger.pl",
+			"homepage" : "https://hakger.pl"
+		}
+	],
+	"support" : {
+		"issues" : "http://phabricator.hakgersoft.pl",
+		"wiki" : "http://phabricator.hakgersoft.pl",
+		"source" : "http://phabricator.hakgersoft.pl",
+		"email" : "bok@hakger.pl"
+	},
+	"repositories" : [{
+			"type" : "composer",
+			"url" : "https://satis.hakgersoft.pl"
+		}
+	]
 }
