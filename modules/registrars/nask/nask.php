@@ -1,23 +1,6 @@
 <?php
 /**
- * WHMCS SDK Sample Registrar Module
- *
- * Registrar Modules allow you to create modules that allow for domain
- * registration, management, transfers, and other functionality within
- * WHMCS.
- *
- * This sample file demonstrates how a registrar module for WHMCS should
- * be structured and exercises supported functionality.
- *
- * Registrar Modules are stored in a unique directory within the
- * modules/registrars/ directory that matches the module's unique name.
- * This name should be all lowercase, containing only letters and numbers,
- * and always start with a letter.
- *
- * Within the module itself, all functions must be prefixed with the module
- * filename, followed by an underscore, and then the function name. For
- * example this file, the filename is "registrarmodule.php" and therefore all
- * function begin "nask_".
+ * WHMCS NASK Registrar Module
  *
  * If your module or third party API does not support a given function, you
  * should not define the function within your module. WHMCS recommends that
@@ -56,7 +39,7 @@ use WHMCS\Module\Registrar\Nask\ApiClient;
 function nask_MetaData()
 {
     return array(
-        'DisplayName' => 'Sample Registrar Module for WHMCS',
+        'DisplayName' => 'NASK Registrar Module for WHMCS',
         'APIVersion' => '1.1',
     );
 }
@@ -85,49 +68,59 @@ function nask_getConfigArray()
         // Friendly display name for the module
         'FriendlyName' => array(
             'Type' => 'System',
-            'Value' => 'Sample Registrar Module for WHMCS',
+            'Value' => 'NASK Registrar Module for WHMCS',
+        ),
+        'Host' => array(
+            'Type' => 'text',
+            'Size' => 255,
+            'Description' => "Hostname with protocol to NASK server",
+            'Default' => "https://registry.dns.pl/registry/epp"
         ),
         // a text field type allows for single line text input
-        'API Username' => array(
+        'Username' => array(
             'Type' => 'text',
-            'Size' => '25',
-            'Default' => '1024',
-            'Description' => 'Enter in megabytes',
+            'Size' => '20',
+            'Default' => 'user',
+            'Description' => 'NASK EPP User name',
         ),
         // a password field type allows for masked text input
-        'API Key' => array(
+        'Password' => array(
             'Type' => 'password',
             'Size' => '25',
             'Default' => '',
-            'Description' => 'Enter secret value here',
+            'Description' => 'NASK User password',
+        ),
+        "Prefix" => array(
+            "Type" => "text",
+            "Size" => "16",
+            "FriendlyName" => "Contact Id Prefix",
+            "Description" => "Enter mandatory prefix provided by NASK, min 3 letters",
+        ),
+        "CACert" => array(
+            "Type" => "text",
+            "Size" => "255",
+            "FriendlyName"=> "CA Chain",
+            "Description" => "Path to NASK CA chain. If starts with '/' is interpreted as absolute.",
+            "Default" => "nask_root_ca.pem",
+        ),
+        "Cert" => array(
+            "Type" => "text",
+            "Size" => "255",
+            "FriendlyName" => "Client Certificate",
+            "Description" => "Path to client certificate issued by NASK",
+            "Default" => "certificate_prod.pem",
+        ),
+        "PrivateKey" => array(
+            "Type" => "text",
+            "Size" => "255",
+            "FriendlyName" => "Private Key",
+            "Description" => "Path to client certificate Private Key issued by NASK",
+            "Default" => "key_prod.pem",
         ),
         // the yesno field type displays a single checkbox option
-        'Test Mode' => array(
+        'Debug' => array(
             'Type' => 'yesno',
-            'Description' => 'Tick to enable',
-        ),
-        // the dropdown field type renders a select menu of options
-        'Account Mode' => array(
-            'Type' => 'dropdown',
-            'Options' => array(
-                'option1' => 'Display Value 1',
-                'option2' => 'Second Option',
-                'option3' => 'Another Option',
-            ),
-            'Description' => 'Choose one',
-        ),
-        // the radio field type displays a series of radio button options
-        'Email Preference' => array(
-            'Type' => 'radio',
-            'Options' => 'First Option,Second Option,Third Option',
-            'Description' => 'Choose your preference',
-        ),
-        // the textarea field type allows for multi-line text input
-        'Email' => array(
-            'Type' => 'textarea',
-            'Rows' => '3',
-            'Cols' => '60',
-            'Description' => 'Freeform multi-line text input field',
+            'Description' => 'Enable debugging output',
         ),
     );
 }
