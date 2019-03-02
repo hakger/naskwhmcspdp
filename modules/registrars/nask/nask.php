@@ -150,7 +150,16 @@ function nask_RegisterDomain($params)
     $cert = $params['Cert'];
     $key = $params['PrivateKey'];
 
-    $client = new ApiClient();
+    $client = new ApiClient($host, $user, $pass, $ca, $cert, $key);
+
+
+
+    $contactId = $params['Prefix'].$params['userid'];
+
+    if($client->isContactAvailable($contactId)){
+        // contact avail, need to create contact
+
+    }
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
