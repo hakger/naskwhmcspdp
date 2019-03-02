@@ -1,8 +1,8 @@
 {
-    "require": {
-        "hakger/php-epp2": "dev-master"
-    },
-    "authors" : [{
+	"require" : {
+		"hakger/php-epp2" : "dev-master"
+	},
+	"authors" : [{
 			"name" : "Hubert Kowalski",
 			"email" : "h.kowalski@hakger.pl",
 			"homepage" : "https://hakger.pl"
@@ -18,5 +18,13 @@
 			"type" : "composer",
 			"url" : "https://satis.hakgersoft.pl"
 		}
-	]
+	],
+	"name" : "nask",
+	"description" : "WHMCS NASK Domain Registrar Module",
+	"type" : "whmcs-registrars",
+	"autoload" : {
+		"psr-4" : {
+			"WHMCS\\Module\\Registrar\\Nask" : "lib"
+		}
+	}
 }

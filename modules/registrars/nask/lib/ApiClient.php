@@ -2,14 +2,105 @@
 
 namespace WHMCS\Module\Registrar\Nask;
 
+use AfriCC\EPP\ClientInterface;
+use AfriCC\EPP\HTTPClient;
+use AfriCC\EPP\Extension\NASK\Create\Contact as ContactCreateFrame;
+use AfriCC\EPP\Extension\NASK\Info\Contact as ContactInfoFrame;
+use AfriCC\EPP\Frame\Command\Check\Contact as ContactCheckFrame;
+use AfriCC\EPP\Extension\NASK\Update\Contact as ContactUpdateFrame;
+use AfriCC\EPP\Frame\Command\Delete\Contact as ContactDeleteFrame;
+
 /**
- * Sample Registrar Module Simple API Client.
+ * NASK Registrar Module Simple EPP Client.
  *
- * A simple API Client for communicating with an external API endpoint.
+ * A simple EPP Client for communicating with an external API endpoint.
  */
 class ApiClient
 {
-    const API_URL = 'https://www.example.com/api/1.0/';
+
+    /**
+     * EPP Client
+     * @var ClientInterface
+     */
+    protected $client;
+
+    public function __construct(string $eppHost, string $eppUser, string $eppPass, string $caCert, string $certificate, string $privateKey)
+    {
+        \AfriCC\EPP\Extension\NASK\ObjectSpec::overwriteParent();
+        $config = [
+            'debug' => true,
+            'host' => $eppHost,
+            'username' => $eppUser,
+            'password' => $eppPass,
+            'services' => \AfriCC\EPP\Extension\NASK\ObjectSpec::$services,
+            'serviceExtensions' => \AfriCC\EPP\Extension\NASK\ObjectSpec::$serviceExtensions,
+            //'ssl' => true,
+            'ca_cert' => $caCert,
+            'local_cert' => $certificate,
+            'pk_cert' => $privateKey,
+        ];
+        $this->client=new HTTPClient($config);
+    }
+
+    /**
+     *
+     * @param string $contactId
+     * @return \AfriCC\EPP\Frame\Command\Check\Contact
+     */
+    private function getContactCheckFrame($contactId)
+    {
+        $frame = new ContactCheckFrame();
+        $frame->addId($contactId);
+        return $frame;
+    }
+
+    /**
+     * Get contact availability
+     *
+     * @param string $contactId
+     * @return boolean contact availability
+     */
+    public function isContactAvailable(string $contactId) {
+        $frame = $this->getContactCheckFrame($contactId);
+        $response = $this->client->request($frame);
+        if(!$response->success()){
+            return false;// TODO: check if this is correct logic
+        }
+        return boolval($response->data()['chkData']['cd']['@id']['avail']);
+    }
+
+    /**
+     *
+     * @param array $data
+     * @return \AfriCC\EPP\Extension\NASK\Create\Contact
+     */
+    private function getContactCreateFrame(array $data) {
+        $frame = new ContactCreateFrame();
+        $frame->skipInt(true);
+        $frame->setId($data['id']);
+        $frame->setName($data['name']);
+        if(!empty($data['company'])){
+            $frame->setOrganization($data['company']);
+            $frame->setIndividual(false);
+        }
+        foreach ($data['street'] as $street){
+            $frame->addStreet($street);
+        }
+        $frame->setCity($data['city']);
+        if(!empty($data['province'])){
+            $frame->setProvince($data['province']);
+        }
+        $frame->setPostalCode($data['postalcode']);
+        $frame->setCountryCode($data['countrycode']);
+        $frame->setVoice($data['fullphonenumber']);
+        $frame->setEmail($data['email']);
+        $frame->setAuthInfo();
+        return $frame;
+    }
+
+    public function createContact($contactId, $params){
+
+    }
 
     protected $results = array();
 

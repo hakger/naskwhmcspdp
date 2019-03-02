@@ -24,7 +24,7 @@ use WHMCS\Domains\DomainLookup\SearchResult;
 use WHMCS\Module\Registrar\Nask\ApiClient;
 
 // Require any libraries needed for the module to function.
-// require_once __DIR__ . '/path/to/library/loader.php';
+require_once __DIR__ . '/vendor/autoload.php';
 //
 // Also, perform any initialization required by the service's library.
 
@@ -143,6 +143,14 @@ function nask_getConfigArray()
  */
 function nask_RegisterDomain($params)
 {
+    $host = $params['Host'];
+    $user = $params['Username'];
+    $pass = $params['Password'];
+    $ca = $params['CACert'];
+    $cert = $params['Cert'];
+    $key = $params['PrivateKey'];
+
+    $client = new ApiClient();
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
