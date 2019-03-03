@@ -47,6 +47,14 @@ class ApiClient
             'pk_cert' => $privateKey,
         ];
         $this->client=new HTTPClient($config);
+        logModuleCall(
+            'NASK',
+            'ApiClient::__construct',
+            $config,
+            [],
+            [],
+                ['password']
+            );
     }
 
     /**
@@ -70,6 +78,15 @@ class ApiClient
     public function isContactAvailable(string $contactId) {
         $frame = $this->getContactCheckFrame($contactId);
         $response = $this->client->request($frame);
+
+        logModuleCall(
+            'NASK',
+            __METHOD__,
+            $frame,
+            $response,
+            $response->data(),
+            ['password']);
+
         if(!$response->success()){
             return false;// TODO: check if this is correct logic
         }
@@ -116,9 +133,16 @@ class ApiClient
                 $params['address2']
             ],
         ];
-        $data = array_merge($base_data, array_intersect_key($params, array_flip($copy_keys)));
+        $data = array_merge($data_base, array_intersect_key($params, array_flip($copy_keys)));
         $frame = $this->getContactCreateFrame($data);
         $response = $this->client->request($frame);
+        logModuleCall(
+            'NASK',
+            __METHOD__,
+            $frame,
+            $response,
+            $response->data(),
+            ['password']);
         if(!$response->success()){
             throw new \Exception($response->message(), $response->code());
         }
@@ -141,6 +165,13 @@ class ApiClient
         $nameservers = array_filter($ns);
         $frame = $this->getDomainCreateFrame($domain, $registrant, $reg_period, $nameservers);
         $response = $this->client->request($frame);
+        logModuleCall(
+            'NASK',
+            __METHOD__,
+            $frame,
+            $response,
+            $response->data(),
+            ['password']);
         if(!$response->success()){
             throw new \Exception($response->message(), $response->code());
         }
