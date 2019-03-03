@@ -99,7 +99,23 @@ class ApiClient
     }
 
     public function createContact($contactId, $params){
-
+        $copy_keys = ['city','province', 'postalcode', 'countrycode', 'countrycode', 'fullphonenumber', 'email'];
+        $data_base = [
+            'id' => $contactId,
+            'name' => $params['fullname'],
+            'company' => $params['companyname'],
+            'street' => [
+                $params['address1'],
+                $params['address2']
+            ],
+        ];
+        $data = array_merge($base_data, array_intersect_key($params, array_flip($copy_keys)));
+        $frame = $this->getContactCreateFrame($data);
+        $response = $this->client->request($frame);
+        if(!$response->success()){
+            throw new \Exception($response->message(), $response->code());
+        }
+        return true;
     }
 
     protected $results = array();

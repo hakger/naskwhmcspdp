@@ -152,21 +152,37 @@ function nask_RegisterDomain($params)
 
     $client = new ApiClient($host, $user, $pass, $ca, $cert, $key);
 
+    $fullName = $params["fullname"]; // First name and last name combined
+    $companyName = $params["companyname"];
+    $email = $params["email"];
+    $address1 = $params["address1"];
+    $address2 = $params["address2"];
+    $city = $params["city"];
+    $state = $params["state"]; // eg. TX
+    $stateFullName = $params["fullstate"]; // eg. Texas
+    $postcode = $params["postcode"]; // Postcode/Zip code
+    $countryCode = $params["countrycode"]; // eg. GB
+    $countryName = $params["countryname"]; // eg. United Kingdom
+    $phoneNumber = $params["phonenumber"]; // Phone number as the user provided it
+    $phoneCountryCode = $params["phonecc"]; // Country code determined based on country
+    $phoneNumberFormatted = $params["fullphonenumber"]; // Format: +CC.xxxxxxxxxxxx
 
+    $data_hash = md5($fullName.$companyName.$email.$address1.$address2.$city.$postcode.$phoneNumberFormatted);
+    $data_fullalpha = base_convert($data_hash, 16, 36);
 
     $contactId = $params['Prefix'].$params['userid'];
 
-    if($client->isContactAvailable($contactId)){
-        // contact avail, need to create contact
-
+    $contactId = $contactId . substr($data_fullalpha, 0, 16-strlen($contactId));
+    try {
+        if($client->isContactAvailable($contactId)){
+            // contact avail, need to create contact
+            $client->createContact($contactId, $params);
+        }
+    } catch (\Exception $e) {
+        return array(
+            'error' => $e->getMessage(),
+        );
     }
-    // user defined configuration values
-    $userIdentifier = $params['API Username'];
-    $apiKey = $params['API Key'];
-    $testMode = $params['Test Mode'];
-    $accountMode = $params['Account Mode'];
-    $emailPreference = $params['Email Preference'];
-    $additionalInfo = $params['Additional Information'];
 
     // registration parameters
     $sld = $params['sld'];
@@ -185,24 +201,6 @@ function nask_RegisterDomain($params)
     $nameserver3 = $params['ns3'];
     $nameserver4 = $params['ns4'];
     $nameserver5 = $params['ns5'];
-
-    // registrant information
-    $firstName = $params["firstname"];
-    $lastName = $params["lastname"];
-    $fullName = $params["fullname"]; // First name and last name combined
-    $companyName = $params["companyname"];
-    $email = $params["email"];
-    $address1 = $params["address1"];
-    $address2 = $params["address2"];
-    $city = $params["city"];
-    $state = $params["state"]; // eg. TX
-    $stateFullName = $params["fullstate"]; // eg. Texas
-    $postcode = $params["postcode"]; // Postcode/Zip code
-    $countryCode = $params["countrycode"]; // eg. GB
-    $countryName = $params["countryname"]; // eg. United Kingdom
-    $phoneNumber = $params["phonenumber"]; // Phone number as the user provided it
-    $phoneCountryCode = $params["phonecc"]; // Country code determined based on country
-    $phoneNumberFormatted = $params["fullphonenumber"]; // Format: +CC.xxxxxxxxxxxx
 
     /**
      * Admin contact information.
@@ -288,10 +286,6 @@ function nask_RegisterDomain($params)
         'emailforwarding' => $enableEmailForwarding,
         'idprotection' => $enableIdProtection,
     );
-
-    if ($premiumDomainsEnabled && $premiumDomainsCost) {
-        $postfields['accepted_premium_cost'] = $premiumDomainsCost;
-    }
 
     try {
         $api = new ApiClient();
