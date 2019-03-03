@@ -9,6 +9,13 @@ use AfriCC\EPP\Extension\NASK\Info\Contact as ContactInfoFrame;
 use AfriCC\EPP\Frame\Command\Check\Contact as ContactCheckFrame;
 use AfriCC\EPP\Extension\NASK\Update\Contact as ContactUpdateFrame;
 use AfriCC\EPP\Frame\Command\Delete\Contact as ContactDeleteFrame;
+use AfriCC\EPP\Frame\Command\Check\Domain as DomainCheckFrame;
+use AfriCC\EPP\Extension\NASK\Create\Domain as DomainCreateFrame;
+use AfriCC\EPP\Frame\Command\Info\Domain as DomainInfoFrame;
+use AfriCC\EPP\Extension\NASK\Update\Domain as DomainUpdateFrame;
+use AfriCC\EPP\Extension\NASK\Transfer\Domain as DomainTransferFrame;
+use AfriCC\EPP\Extension\NASK\Renew\Domain as DomainRenewFrame;
+use AfriCC\EPP\Frame\Command\Delete\Domain as DomainDeleteFrame;
 
 /**
  * NASK Registrar Module Simple EPP Client.
@@ -111,6 +118,28 @@ class ApiClient
         ];
         $data = array_merge($base_data, array_intersect_key($params, array_flip($copy_keys)));
         $frame = $this->getContactCreateFrame($data);
+        $response = $this->client->request($frame);
+        if(!$response->success()){
+            throw new \Exception($response->message(), $response->code());
+        }
+        return true;
+    }
+
+    private function getDomainCreateFrame($domain, $registrant, $period, $ns){
+        $frame = new DomainCreateFrame();
+        $frame->setDomain(\idn_to_ascii($domain));
+        $frame->setRegistrant($registrant);
+        $frame->setPeriod($period);
+        foreach ($ns as $nameserver) {
+            $frame->addNs(\idn_to_ascii($nameserver));
+        }
+        return $frame;
+    }
+
+    public function registerDomain($domain, $registrant, $period, $ns){
+        $reg_period = is_int($period) ? $period.'y' : $period;
+        $nameservers = array_filter($ns);
+        $frame = $this->getDomainCreateFrame($domain, $registrant, $reg_period, $nameservers);
         $response = $this->client->request($frame);
         if(!$response->success()){
             throw new \Exception($response->message(), $response->code());
