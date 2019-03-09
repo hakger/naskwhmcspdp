@@ -25,6 +25,13 @@ use AfriCC\EPP\Frame\Command\Delete\Domain as DomainDeleteFrame;
 class ApiClient
 {
 
+    //nask consts
+    const MAX_CHECK = 20;
+    const DOMAIN_AVAIL = true;
+    const DOMAIN_NOT_AVAIL = false;
+    const DOMAIN_UNHANDLED_TLD = 3;
+    const DOMAIN_ERROR = 4;
+
     /**
      * EPP Client
      * @var ClientInterface
@@ -176,6 +183,79 @@ class ApiClient
             throw new \Exception($response->message(), $response->code());
         }
         return true;
+    }
+
+    private function getCheckFrame(array $domains){
+        $frame = new DomainCheckFrame();
+        foreach ($domains as $domain){
+            $frame->addDomain(\idn_to_ascii($domain));
+        }
+        return $frame;
+    }
+
+    public function checkDomainsAvailability($sld, array $tlds){
+        $results=[];
+        $requests=[];
+        $sld_len = mb_strlen($sld);
+        foreach ($tlds as $tld) {
+            if(mb_substr($tld, 0, 1) !== '.'){
+                //add dot
+                $tld = '.'.$tld;
+            }
+            if(mb_substr($tld, -3)!=='.pl'){
+                //we're not handling non '.pl' tlds
+                $results[$sld.$tld] = [
+                    'tld' => $tld,
+                    'avail' => ApiClient::DOMAIN_UNHANDLED_TLD,
+                ];
+                continue;
+            }
+            $requests[]=$sld.$tld;
+        }
+        $chunked_requests = array_chunk($requests, ApiClient::MAX_CHECK);
+        //checks
+        foreach ($chunked_requests as $domains) {
+            // reach max checks. need to send req now
+            $frame = $this->getCheckFrame($domains);
+            $response = $this->client->request($frame);
+            logModuleCall(
+                'NASK',
+                __METHOD__,
+                $frame,
+                $response,
+                $response->data(),
+                [
+                    'password'
+                ]
+            );
+            if (! $response->success()) {
+                // we had problem
+                foreach ($domains as $req) {
+                    $results[$req] = [
+                        'tld' => mb_substr($req, $sld_len),
+                        'avail' => ApiClient::DOMAIN_ERROR,
+                        'error' => $response->message(),
+                        'code' => $response->code()
+                    ];
+                }
+            } else {
+                $base = $response->data()['chkData']['cd'];
+                $data = [];
+                if (isset($base['name'])) {
+                    $data[] = $base;
+                } else {
+                    $data = $base;
+                }
+                foreach ($data as $av_data) {
+                    $results[$av_data['name']] = [
+                        'tld' => mb_substr($av_data['name'], $sld_len),
+                        'avail' => $av_data['@name']['avail'] || ($av_data['reason'] == 9072),
+                        'code' => $av_data['reason'] ?? 0
+                    ];
+                }
+            }
+        }
+        return $results;
     }
 
     protected $results = array();

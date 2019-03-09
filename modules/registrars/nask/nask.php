@@ -770,43 +770,36 @@ function nask_SaveContactDetails($params)
 function nask_CheckAvailability($params)
 {
     // user defined configuration values
-    $userIdentifier = $params['API Username'];
-    $apiKey = $params['API Key'];
-    $testMode = $params['Test Mode'];
-    $accountMode = $params['Account Mode'];
-    $emailPreference = $params['Email Preference'];
-    $additionalInfo = $params['Additional Information'];
+    $host = $params['Host'];
+    $user = $params['Username'];
+    $pass = $params['Password'];
+    $ca = $params['CACert'];
+    $cert = $params['Cert'];
+    $key = $params['PrivateKey'];
+
+    $client = new ApiClient($host, $user, $pass, $ca, $cert, $key);
 
     // availability check parameters
-    $searchTerm = $params['searchTerm'];
-    $punyCodeSearchTerm = $params['punyCodeSearchTerm'];
     $tldsToInclude = $params['tldsToInclude'];
-    $isIdnDomain = (bool) $params['isIdnDomain'];
-    $premiumEnabled = (bool) $params['premiumEnabled'];
 
-    // Build post data
-    $postfields = array(
-        'username' => $userIdentifier,
-        'password' => $apiKey,
-        'testmode' => $testMode,
-        'domain' => $sld . '.' . $tld,
-        'searchTerm' => $searchTerm,
-        'tldsToSearch' => $tldsToInclude,
-        'includePremiumDomains' => $premiumEnabled,
-    );
+    if ($params['isIdnDomain']) {
+        $label = empty($params['punyCodeSearchTerm']) ? strtolower($params['searchTerm']) : strtolower($params['punyCodeSearchTerm']);
+    } else {
+        $label = strtolower($params['searchTerm']);
+    }
 
     try {
-        $api = new ApiClient();
-        $api->call('CheckAvailability', $postfields);
+
+        $domains = $client->checkDomainsAvailability($label, $tldsToInclude)
 
         $results = new ResultsList();
-        foreach ($api->getFromResponse('domains') as $domain) {
+        foreach ($domains as $domain) {
 
             // Instantiate a new domain search result object
-            $searchResult = new SearchResult($domain['sld'], $domain['tld']);
+            $searchResult = new SearchResult($label, $domain['tld']);
 
             // Determine the appropriate status to return
-            if ($domain['status'] == 'available') {
+            if ($domain['avail'] == 'available') {
                 $status = SearchResult::STATUS_NOT_REGISTERED;
             } elseif ($domain['statis'] == 'registered') {
                 $status = SearchResult::STATUS_REGISTERED;
@@ -816,18 +809,6 @@ function nask_CheckAvailability($params)
                 $status = SearchResult::STATUS_TLD_NOT_SUPPORTED;
             }
             $searchResult->setStatus($status);
-
-            // Return premium information if applicable
-            if ($domain['isPremiumName']) {
-                $searchResult->setPremiumDomain(true);
-                $searchResult->setPremiumCostPricing(
-                    array(
-                        'register' => $domain['premiumRegistrationPrice'],
-                        'renew' => $domain['premiumRenewPrice'],
-                        'CurrencyCode' => 'USD',
-                    )
-                );
-            }
 
             // Append to the search results list
             $results->append($searchResult);
