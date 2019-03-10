@@ -143,6 +143,18 @@ function nask_getConfigArray()
  */
 function nask_RegisterDomain($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            $params['Username'], // Mask username & password in request/response data
+            $params['Password'],
+        )
+        );
+
     $host = $params['Host'];
     $user = $params['Username'];
     $pass = $params['Password'];
@@ -228,6 +240,20 @@ function nask_RegisterDomain($params)
  */
 function nask_TransferDomain($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+                'username', // Mask username & password in request/response data
+                'password',
+            )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -392,6 +418,20 @@ function nask_TransferDomain($params)
  */
 function nask_RenewDomain($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -462,6 +502,20 @@ function nask_RenewDomain($params)
  */
 function nask_GetNameservers($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -517,6 +571,20 @@ function nask_GetNameservers($params)
  */
 function nask_SaveNameservers($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -578,6 +646,20 @@ function nask_SaveNameservers($params)
  */
 function nask_GetContactDetails($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -683,6 +765,20 @@ function nask_GetContactDetails($params)
  */
 function nask_SaveContactDetails($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -790,7 +886,7 @@ function nask_CheckAvailability($params)
 
     try {
 
-        $domains = $client->checkDomainsAvailability($label, $tldsToInclude)
+        $domains = $client->checkDomainsAvailability($label, $tldsToInclude);
 
         $results = new ResultsList();
         foreach ($domains as $domain) {
@@ -798,15 +894,21 @@ function nask_CheckAvailability($params)
             // Instantiate a new domain search result object
             $searchResult = new SearchResult($label, $domain['tld']);
 
-            // Determine the appropriate status to return
-            if ($domain['avail'] == 'available') {
-                $status = SearchResult::STATUS_NOT_REGISTERED;
-            } elseif ($domain['statis'] == 'registered') {
-                $status = SearchResult::STATUS_REGISTERED;
-            } elseif ($domain['statis'] == 'reserved') {
-                $status = SearchResult::STATUS_RESERVED;
-            } else {
-                $status = SearchResult::STATUS_TLD_NOT_SUPPORTED;
+            $status = SearchResult::STATUS_UNKNOWN;
+
+            switch ($domain['avail']) {
+                case ApiClient::DOMAIN_AVAIL:
+                    $status = SearchResult::STATUS_NOT_REGISTERED;
+                    break;
+                case ApiClient::DOMAIN_NOT_AVAIL:
+                    $status = SearchResult::STATUS_REGISTERED;
+                    break;
+                case ApiClient::DOMAIN_UNHANDLED_TLD:
+                    $status = SearchResult::STATUS_TLD_NOT_SUPPORTED;
+                    break;
+                default:
+                    $status = SearchResult::STATUS_UNKNOWN;
+                break;
             }
             $searchResult->setStatus($status);
 
@@ -860,6 +962,20 @@ function nask_DomainSuggestionOptions() {
  */
 function nask_GetDomainSuggestions($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -942,6 +1058,20 @@ function nask_GetDomainSuggestions($params)
  */
 function nask_GetRegistrarLock($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -990,6 +1120,20 @@ function nask_GetRegistrarLock($params)
  */
 function nask_SaveRegistrarLock($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1040,6 +1184,20 @@ function nask_SaveRegistrarLock($params)
  */
 function nask_GetDNS($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1093,6 +1251,20 @@ function nask_GetDNS($params)
  */
 function nask_SaveDNS($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1143,6 +1315,20 @@ function nask_SaveDNS($params)
  */
 function nask_IDProtectToggle($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1201,6 +1387,20 @@ function nask_IDProtectToggle($params)
  */
 function nask_GetEPPCode($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1258,6 +1458,20 @@ function nask_GetEPPCode($params)
  */
 function nask_ReleaseDomain($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1308,6 +1522,20 @@ function nask_ReleaseDomain($params)
  */
 function nask_RequestDelete($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1356,6 +1584,20 @@ function nask_RequestDelete($params)
  */
 function nask_RegisterNameserver($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1410,6 +1652,20 @@ function nask_RegisterNameserver($params)
  */
 function nask_ModifyNameserver($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1464,6 +1720,20 @@ function nask_ModifyNameserver($params)
  */
 function nask_DeleteNameserver($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1518,6 +1788,20 @@ function nask_DeleteNameserver($params)
  */
 function nask_Sync($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1570,6 +1854,20 @@ function nask_Sync($params)
  */
 function nask_TransferSync($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];
@@ -1658,6 +1956,20 @@ function nask_ClientAreaAllowedFunctions()
  */
 function nask_push($params)
 {
+    logModuleCall(
+        'NASK',
+        __FUNCTION__,
+        $params,
+        [],
+        [],
+        array(
+            'username', // Mask username & password in request/response data
+            'password',
+        )
+        );
+    return [
+        'error' => 'Not implemented YET'
+    ];
     // user defined configuration values
     $userIdentifier = $params['API Username'];
     $apiKey = $params['API Key'];

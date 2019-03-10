@@ -60,7 +60,7 @@ class ApiClient
             $config,
             [],
             [],
-                ['password']
+            [$eppUser,$eppPass]
             );
     }
 
@@ -86,18 +86,17 @@ class ApiClient
         $frame = $this->getContactCheckFrame($contactId);
         $response = $this->client->request($frame);
 
+        $avail =  !$response->success() ? false : filter_var($response->data()['chkData']['cd']['@id']['avail'], FILTER_VALIDATE_BOOLEAN);
+
         logModuleCall(
             'NASK',
             __METHOD__,
-            $frame,
-            $response,
-            $response->data(),
+            $frame->__toString(),
+            $response->__toString(),
+            ['avail' => $avail, 'reason' => $response->data()['chkData']['cd']],
             ['password']);
 
-        if(!$response->success()){
-            return false;// TODO: check if this is correct logic
-        }
-        return boolval($response->data()['chkData']['cd']['@id']['avail']);
+        return $avail;
     }
 
     /**
@@ -115,13 +114,15 @@ class ApiClient
             $frame->setIndividual(false);
         }
         foreach ($data['street'] as $street){
-            $frame->addStreet($street);
+            if(!empty($street)) {
+                $frame->addStreet($street);
+            }
         }
         $frame->setCity($data['city']);
         if(!empty($data['province'])){
             $frame->setProvince($data['province']);
         }
-        $frame->setPostalCode($data['postalcode']);
+        $frame->setPostalCode($data['postcode']);
         $frame->setCountryCode($data['countrycode']);
         $frame->setVoice($data['fullphonenumber']);
         $frame->setEmail($data['email']);
@@ -130,7 +131,7 @@ class ApiClient
     }
 
     public function createContact($contactId, $params){
-        $copy_keys = ['city','province', 'postalcode', 'countrycode', 'countrycode', 'fullphonenumber', 'email'];
+        $copy_keys = ['city','province', 'postcode', 'countrycode', 'fullphonenumber', 'email'];
         $data_base = [
             'id' => $contactId,
             'name' => $params['fullname'],
@@ -146,8 +147,8 @@ class ApiClient
         logModuleCall(
             'NASK',
             __METHOD__,
-            $frame,
-            $response,
+            $frame->__toString(),
+            $response->__toString(),
             $response->data(),
             ['password']);
         if(!$response->success()){
@@ -164,19 +165,20 @@ class ApiClient
         foreach ($ns as $nameserver) {
             $frame->addNs(\idn_to_ascii($nameserver));
         }
+        $frame->setAuthInfo();
         return $frame;
     }
 
     public function registerDomain($domain, $registrant, $period, $ns){
-        $reg_period = is_int($period) ? $period.'y' : $period;
+        $reg_period = $period.'y';
         $nameservers = array_filter($ns);
         $frame = $this->getDomainCreateFrame($domain, $registrant, $reg_period, $nameservers);
         $response = $this->client->request($frame);
         logModuleCall(
             'NASK',
             __METHOD__,
-            $frame,
-            $response,
+            $frame->__toString(),
+            $response->__toString(),
             $response->data(),
             ['password']);
         if(!$response->success()){

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b6721b85fdfe1e75edff8da8e44b7c9",
+    "content-hash": "77e803a7ec7381231b903312a8c66a1e",
     "packages": [
         {
             "name": "hakger/php-epp2",
@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://vcs@phabricator.hakgersoft.pl/diffusion/PHPEPP/php-epp2.git",
-                "reference": "b3ac05b1b9207a6934de6554b04f117d23044e01"
+                "reference": "0016e20e230ed815b26b50b63432d16bf9b77ba9"
             },
             "require": {
                 "ext-intl": "*",
@@ -55,7 +55,7 @@
                 "registry",
                 "tcp"
             ],
-            "time": "2019-01-09T22:30:13+00:00"
+            "time": "2019-03-04T10:06:33+00:00"
         }
     ],
     "packages-dev": [],

@@ -24,7 +24,7 @@
 	"type" : "whmcs-registrars",
 	"autoload" : {
 		"psr-4" : {
-			"WHMCS\\Module\\Registrar\\Nask" : "lib"
+			"WHMCS\\Module\\Registrar\\Nask\\" : "lib"
 		}
 	}
 }

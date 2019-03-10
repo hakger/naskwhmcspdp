@@ -42,8 +42,8 @@ add_hook('AdminHomeWidgets', 1, function() {
  */
 class SampleRegistrarModuleWidget extends \WHMCS\Module\AbstractWidget
 {
-    protected $title = 'Sample Registrar Module';
-    protected $description = '';
+    protected $title = 'NASK Module';
+    protected $description = 'Admin NASK hook';
     protected $weight = 150;
     protected $columns = 1;
     protected $cache = false;
@@ -57,6 +57,17 @@ class SampleRegistrarModuleWidget extends \WHMCS\Module\AbstractWidget
 
     public function generateOutput($data)
     {
+        logModuleCall(
+            'NASK',
+            __METHOD__,
+            $data,
+            [],
+            [],
+            array(
+                'username', // Mask username & password in request/response data
+                'password',
+            )
+            );
         return <<<EOF
 <div class="widget-content-padded">
     Your widget output goes here...
