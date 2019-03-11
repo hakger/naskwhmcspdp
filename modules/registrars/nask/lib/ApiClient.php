@@ -223,8 +223,8 @@ class ApiClient
             logModuleCall(
                 'NASK',
                 __METHOD__,
-                $frame,
-                $response,
+                $frame->__toString(),
+                $response->__toString(),
                 $response->data(),
                 [
                     'password'
@@ -258,6 +258,46 @@ class ApiClient
             }
         }
         return $results;
+    }
+
+    private function getDomainInfoFrame(string $domain){
+        $frame = new DomainInfoFrame();
+        $frame->setDomain(\idn_to_ascii($domain), 'all');
+        return $frame;
+    }
+
+    public function getDomainInfo(string $domain){
+        $frame = $this->getDomainInfoFrame($domain);
+        $response = $this->client->request($frame);
+        if(!$response->success()){
+            $error = [
+                'error' => true,
+                'code' => $response->code(),
+                'message' => $response->message(),
+            ];
+            logModuleCall(
+                'NASK',
+                __METHOD__,
+                $frame->__toString(),
+                $response->__toString(),
+                $error,
+                [
+                    'password'
+                ]
+            );
+            return $error;
+        }
+        logModuleCall(
+            'NASK',
+            __METHOD__,
+            $frame->__toString(),
+            $response->__toString(),
+            $response->data()['infData'],
+            [
+                'password'
+            ]
+        );
+        return $response->data()['infData'];
     }
 
     protected $results = array();

@@ -1799,39 +1799,56 @@ function nask_Sync($params)
             'password',
         )
         );
-    return [
-        'error' => 'Not implemented YET'
-    ];
+
     // user defined configuration values
-    $userIdentifier = $params['API Username'];
-    $apiKey = $params['API Key'];
-    $testMode = $params['Test Mode'];
-    $accountMode = $params['Account Mode'];
-    $emailPreference = $params['Email Preference'];
-    $additionalInfo = $params['Additional Information'];
+    $host = $params['Host'];
+    $user = $params['Username'];
+    $pass = $params['Password'];
+    $ca = $params['CACert'];
+    $cert = $params['Cert'];
+    $key = $params['PrivateKey'];
 
     // domain parameters
-    $sld = $params['sld'];
-    $tld = $params['tld'];
-
-    // Build post data
-    $postfields = array(
-        'username' => $userIdentifier,
-        'password' => $apiKey,
-        'testmode' => $testMode,
-        'domain' => $sld . '.' . $tld,
-    );
+    $domain = $params['sld'].'.'.$params['tld'];
 
     try {
-        $api = new ApiClient();
-        $api->call('GetDomainInfo', $postfields);
+        $client = new ApiClient($host, $user, $pass, $ca, $cert, $key);
+        $data = $client->getDomainInfo($domain);
 
-        return array(
-            'expirydate' => $api->getFromResponse('expirydate'), // Format: YYYY-MM-DD
-            'active' => (bool) $api->getFromResponse('active'), // Return true if the domain is active
-            'expired' => (bool) $api->getFromResponse('expired'), // Return true if the domain has expired
-            'transferredAway' => (bool) $api->getFromResponse('transferredaway'), // Return true if the domain is transferred out
-        );
+        if(isset($data['error']) && $data['error']){
+            // we haf error hier!
+            return [
+                'error' => "NASK/Sync: Error [{$data['code']}] - {$data['message']} ",
+            ];
+        }
+
+        if($data['clID'] !== $user) {
+            //domain not ours ;(
+            return [
+                'transferredAway' => true,
+            ];
+        }
+
+        if(!empty($data['status'])){
+            if(!is_array($data['status'])){
+                $data['status'] = [$data['status']];
+            }
+        } else {
+            $data['status'] = [];
+        }
+        if(in_array('pendingDelete', $data['status'])){
+            //domain is expired :/
+            return [
+                'active' => false,
+                'expired' => true,
+                'expirydate' => date('Y-m-d', strtotime($data['exDate'])),
+            ];
+        }
+
+        return [
+            'active' => true,
+            'expirydate' => date('Y-m-d', strtotime($data['exDate'])),
+        ];
 
     } catch (\Exception $e) {
         return array(
