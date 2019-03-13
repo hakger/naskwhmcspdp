@@ -502,54 +502,52 @@ function nask_RenewDomain($params)
  */
 function nask_GetNameservers($params)
 {
-    logModuleCall(
-        'NASK',
-        __FUNCTION__,
-        $params,
-        [],
-        [],
-        array(
-            'username', // Mask username & password in request/response data
-            'password',
-        )
-        );
-    return [
-        'error' => 'Not implemented YET'
-    ];
     // user defined configuration values
-    $userIdentifier = $params['API Username'];
-    $apiKey = $params['API Key'];
-    $testMode = $params['Test Mode'];
-    $accountMode = $params['Account Mode'];
-    $emailPreference = $params['Email Preference'];
-    $additionalInfo = $params['Additional Information'];
+    $host = $params['Host'];
+    $user = $params['Username'];
+    $pass = $params['Password'];
+    $ca = $params['CACert'];
+    $cert = $params['Cert'];
+    $key = $params['PrivateKey'];
 
     // domain parameters
-    $sld = $params['sld'];
-    $tld = $params['tld'];
-    $registrationPeriod = $params['regperiod'];
-
-    // Build post data
-    $postfields = array(
-        'username' => $userIdentifier,
-        'password' => $apiKey,
-        'testmode' => $testMode,
-        'domain' => $sld . '.' . $tld,
-    );
+    $domain = $params['sld'].'.'.$params['tld'];
 
     try {
-        $api = new ApiClient();
-        $api->call('GetNameservers', $postfields);
+        $client = new ApiClient($host, $user, $pass, $ca, $cert, $key);
+        $data = $client->getDomainInfo($domain);
 
-        return array(
-            'success' => true,
-            'ns1' => $api->getFromResponse('nameserver1'),
-            'ns2' => $api->getFromResponse('nameserver2'),
-            'ns3' => $api->getFromResponse('nameserver3'),
-            'ns4' => $api->getFromResponse('nameserver4'),
-            'ns5' => $api->getFromResponse('nameserver5'),
-        );
+        if(isset($data['error']) && $data['error']){
+            return [
+                'error' => "NASK/getNameservers: Error [{$data['code']}] - {$data['message']}",
+            ];
+        }
 
+        if(!isset($data['ns']) || empty($data['ns'])){
+            return [
+                'error' => "NASK/getNameservers: Empty NS!",
+            ];
+        }
+
+        $result = ['success' => true];
+
+        foreach($data['ns'] as $i => $ns){
+            $result['ns'.($i+1)] = $ns;
+        }
+
+        logModuleCall(
+            'NASK',
+            __FUNCTION__,
+            $params,
+            $data,
+            $result,
+            array(
+                'username', // Mask username & password in request/response data
+                'password',
+            )
+            );
+
+        return $result;
     } catch (\Exception $e) {
         return array(
             'error' => $e->getMessage(),
